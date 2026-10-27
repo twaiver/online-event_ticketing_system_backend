@@ -17,8 +17,13 @@ public class BuyerService {
     private BuyerRepository buyerRepository;
 
     public String saveBuyer(Buyer buyer) {
-        buyerRepository.save(buyer);
-        return "buyer have been saved succuesfully";
+        boolean check = buyerRepository.existsByEmail(buyer.getEmail());
+        if(check) {
+            return "buyer with that email " + buyer.getEmail() + " is already available";
+        } else {
+            buyerRepository.save(buyer);
+            return "buyer have been saved succuesfully";
+        }
     }
 
     public List<Buyer> allBuyers() {
@@ -55,5 +60,10 @@ public class BuyerService {
 
             return "the buyer with this id " + id + " have been updated succeffly";
         }
+    }
+
+    public List<Buyer> findByLastName(String lastName){
+        List<Buyer> result = buyerRepository.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+        return result;
     }
 }

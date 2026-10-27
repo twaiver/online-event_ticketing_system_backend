@@ -72,6 +72,14 @@ public class TicketOrder {
         return quantity;
     }
 
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }

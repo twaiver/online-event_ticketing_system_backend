@@ -11,5 +11,5 @@ import online.event.ticketing.domain.Organizer;
 
 @Repository 
 public interface OrganizerRepository extends JpaRepository<Organizer, UUID> {
-    
+    boolean existsByEmail(String email);
 }

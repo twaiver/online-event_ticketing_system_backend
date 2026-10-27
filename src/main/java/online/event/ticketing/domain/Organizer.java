@@ -3,6 +3,8 @@ package online.event.ticketing.domain;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +38,7 @@ public class Organizer {
     private Venue venue;
 
     @OneToMany (mappedBy = "organizer")
+    @JsonIgnore 
     private List<TicketOrder> ticketOrders;
 
     public UUID getId() {

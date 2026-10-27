@@ -3,6 +3,8 @@ package online.event.ticketing.domain;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +23,7 @@ public class EventCategory {
 
 
     @ManyToMany (mappedBy = "eventCategories")
+    @JsonIgnore 
     List<Organizer> organizers;
 
     public UUID getId() {

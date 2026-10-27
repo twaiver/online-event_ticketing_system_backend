@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import online.event.ticketing.domain.Buyer;
@@ -48,5 +49,11 @@ public class BuyerController {
     public ResponseEntity<?> updateBuyer(@PathVariable UUID id, @RequestBody Buyer buyer) {
         String res = buyerService.updateBuyer(id, buyer);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/by-last-name", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findByLastName(@RequestParam ("lastName") String lastName){
+        List<Buyer> theBuyer = buyerService.findByLastName(lastName);
+        return new ResponseEntity<>(theBuyer, HttpStatus.OK);
     }
 }

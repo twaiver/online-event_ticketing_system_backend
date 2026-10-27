@@ -23,6 +23,7 @@ public class Buyer {
 
     @Column (unique = true)
     private String email;
+    
     private String phone;
 
     

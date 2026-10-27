@@ -1,5 +1,6 @@
 package online.event.ticketing.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import online.event.ticketing.domain.OrderStatus;
 import online.event.ticketing.domain.TicketOrder;
 import online.event.ticketing.service.TicketOrderService;
 
 @RestController 
-@RequestMapping (value = "/api/ticketorders")
+@RequestMapping (value = "/api/ticket-orders")
 public class TicketOrderController {
     
     @Autowired 
@@ -48,5 +51,20 @@ public class TicketOrderController {
     public ResponseEntity<?> updateTicketOrder(@RequestBody  TicketOrder ticketOrder, @PathVariable UUID id) {
         String res = ticketOrderService.updateTicketOrder(id, ticketOrder);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findByStatus(@RequestParam ("status") OrderStatus status){
+
+        List<TicketOrder> allLists = ticketOrderService.findByStatus(status);
+
+        return new ResponseEntity<>(allLists, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/between", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> betweenDates(@RequestParam ("start") LocalDate start, @RequestParam ("end") LocalDate end){
+        List<TicketOrder> result = ticketOrderService.betweenDates(start, end);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
