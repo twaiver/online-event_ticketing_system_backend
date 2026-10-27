@@ -20,7 +20,7 @@ import online.event.ticketing.domain.EventCategory;
 import online.event.ticketing.service.EventCategoryService;
 
 @RestController 
-@RequestMapping (value = "/api/eventcategories")
+@RequestMapping (value = "/api/event-categories")
 public class EventCategoryController {
     
     @Autowired 
@@ -48,5 +48,13 @@ public class EventCategoryController {
     public ResponseEntity<?> updateEventCategory(@RequestBody  EventCategory eventCategory, @PathVariable UUID id) {
         String res = eventCategoryService.updateEvent(id, eventCategory);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/unused")
+    public ResponseEntity<?> unused() {
+
+        List<EventCategory> data = eventCategoryService.unused();
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }

@@ -68,4 +68,10 @@ public class OrganizerService {
             return "the Organizer with this id " + id + " have been updated succeffly";
         }
     }
+
+    public List<Organizer> allByCategories(String name) {
+        List<Organizer> result = organizerRepository.allOrganizerByCategory(name);
+
+        return result;
+    }
 }

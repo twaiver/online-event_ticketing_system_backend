@@ -50,4 +50,11 @@ public class EventCategoryService {
             return "the EventCategory with this id " + id + " have been updated succeffly";
         }
     }
+
+    public List<EventCategory> unused() {
+        
+        List<EventCategory> unusedCat = eventCategoryRepository.unusedCategories();
+
+        return unusedCat;
+    }
 }

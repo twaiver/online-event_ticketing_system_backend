@@ -56,4 +56,15 @@ public class BuyerController {
         List<Buyer> theBuyer = buyerService.findByLastName(lastName);
         return new ResponseEntity<>(theBuyer, HttpStatus.OK);
     }
+
+    @GetMapping (value = "/of-organizer/{organizerId}")
+    public ResponseEntity<?> byOrganizers(@PathVariable UUID organizerId) {
+        List<Buyer> theData = buyerService.allBuyersByOrganizer(organizerId);
+
+        if(!theData.isEmpty()) {
+            return new ResponseEntity<>(theData, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("The organizer with that id does not exist", HttpStatus.valueOf(404));
+        }
+    }
 }

@@ -49,4 +49,12 @@ public class VenueController {
         String res = venueService.updateVenue(id, venue);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    @GetMapping (value = "/free", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> freeVenues(){
+        
+        List<Venue> venues = venueService.freeVenue();
+        
+        return new ResponseEntity<>(venues, HttpStatus.OK);
+    }
 }

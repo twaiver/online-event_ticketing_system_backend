@@ -54,4 +54,10 @@ public class VenueService {
             return "the venue with this id " + id + " have been updated succeffly";
         }
     }
+
+    public List<Venue> freeVenue() {
+        List<Venue> ven = venueRepository.freeVenues();
+
+        return ven;
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import online.event.ticketing.domain.Organizer;
@@ -48,5 +49,12 @@ public class OrganizerController {
     public ResponseEntity<?> updateOrganizer(@RequestBody  Organizer organizer, @PathVariable UUID id) {
         String res = organizerService.updateOrganizer(id, organizer);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/by-event-category", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> allByCategory(@RequestParam ("name") String name){
+        List<Organizer> resu = organizerService.allByCategories(name);
+
+        return new ResponseEntity<>(resu, HttpStatus.OK);
     }
 }
