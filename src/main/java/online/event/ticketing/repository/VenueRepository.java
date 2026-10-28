@@ -15,4 +15,6 @@ public interface VenueRepository extends JpaRepository<Venue, UUID> {
     
     @Query (value = "SELECT V FROM Venue V WHERE NOT EXISTS (SELECT O FROM Organizer O WHERE O.venue = V) ORDER BY V.venueNumber ASC")
     List<Venue> freeVenues();
+
+    Venue findByVenueNumber(int venueNumber);
 }

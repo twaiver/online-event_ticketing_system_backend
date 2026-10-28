@@ -25,8 +25,5 @@ public interface OrganizerRepository extends JpaRepository<Organizer, UUID> {
 
     boolean existsByEventCategoriesAndId(EventCategory eventCategory, UUID id);
 
-    @Query (value = "SELECT v FROM Venue v WHERE v.venueNumber = :venue")
-    Venue venue(@Param ("venue") int venueNumber);
-
     boolean existsByVenue(Venue venue);
 }

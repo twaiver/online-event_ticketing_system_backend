@@ -11,12 +11,16 @@ import online.event.ticketing.domain.EventCategory;
 import online.event.ticketing.domain.Organizer;
 import online.event.ticketing.domain.Venue;
 import online.event.ticketing.repository.OrganizerRepository;
+import online.event.ticketing.repository.VenueRepository;
 
 @Service
 public class OrganizerService {
 
     @Autowired
     private OrganizerRepository organizerRepository;
+
+    @Autowired 
+    private VenueRepository venueRepository;
 
     public String saveOrganizer(Organizer organizer) {
         boolean isAvaialble = organizerRepository.existsByEmail(organizer.getEmail());
@@ -108,7 +112,8 @@ public class OrganizerService {
         if(org.isEmpty()) {
             return "The organizer with that id does not exist";
         } else {
-            Venue venue = organizerRepository.venue(venueNumber);
+            
+            Venue venue = venueRepository.findByVenueNumber(venueNumber);
 
             if(venue == null) {
                 return "The venue with that venueNumber does not exist";
