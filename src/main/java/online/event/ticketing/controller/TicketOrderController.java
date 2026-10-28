@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.PatchExchange;
 
 import online.event.ticketing.domain.OrderStatus;
 import online.event.ticketing.domain.TicketOrder;
@@ -32,7 +33,14 @@ public class TicketOrderController {
     @PostMapping (value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveTicketOrder(@RequestBody  TicketOrder ticketOrder) {
         String res = ticketOrderService.saveTicketOrder(ticketOrder);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+
+        if(res.equals("Ticket order date cannot be in past")) {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(400));
+        } else if(res.equals("Organizer already has an order on that date")) {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(409));
+        } else {
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
     }
 
     @GetMapping (value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,5 +74,19 @@ public class TicketOrderController {
         List<TicketOrder> result = ticketOrderService.betweenDates(start, end);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PatchExchange (value = "/{id}/status")
+    public ResponseEntity<?> patchByStatus(@PathVariable UUID id, @RequestParam ("status") OrderStatus status){
+
+        String res = ticketOrderService.updateBasedOnStatus(id, status);
+        if(res.equals("Ticket order status updated successfully")) {
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } else if(res.equals("the ticket order with that id does not exist")) {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(404 ));
+        } else {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(400));
+        }
+        
     }
 }

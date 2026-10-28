@@ -19,8 +19,21 @@ public class TicketOrderService {
     private TicketOrderRepository ticketOrderRepository;
 
     public String saveTicketOrder(TicketOrder ticketOrder) {
-        ticketOrderRepository.save(ticketOrder);
-        return "ticketOrder have been saved succuesfully";
+        LocalDate nowDate = LocalDate.now();
+        if(ticketOrder.getOrderDate().isBefore(nowDate)) {
+            return "Ticket order date cannot be in past";
+        }else {
+            
+            boolean check = ticketOrderRepository.existsByOrganizerAndOrderDateAndStatusNot(ticketOrder.getOrganizer(), ticketOrder.getOrderDate(), OrderStatus.REFUNDED);
+
+            if(check) {
+                return "Organizer already has an order on that date";
+            } else {
+                ticketOrder.setStatus(OrderStatus.PENDING);
+                ticketOrderRepository.save(ticketOrder);
+                return "ticketOrder have been saved succussfully";
+            }
+        }
     }
 
     public List<TicketOrder> allTicketOrders() {
@@ -57,7 +70,7 @@ public class TicketOrderService {
 
             ticketOrderRepository.save(theTick);
 
-            return "the ticketOrder with this id " + id + " have been updated succeffly";
+            return "the ticketOrder with this id " + id + " have been updated successfully";
         }
     }
 
@@ -70,5 +83,25 @@ public class TicketOrderService {
     public List<TicketOrder> betweenDates(LocalDate start, LocalDate end) {
         List<TicketOrder> result = ticketOrderRepository.findByOrderDateBetweenOrderByOrderDate(start, end);
         return result;
+    }
+
+    public String updateBasedOnStatus(UUID id, OrderStatus status) {
+        Optional<TicketOrder> one = ticketOrderRepository.findById(id);
+        if(one.isEmpty()) {
+            return "the ticket order with that id does not exist";
+        } else {
+            TicketOrder two = one.get();
+            if(two.getStatus().equals(OrderStatus.PENDING) && !(status.equals(OrderStatus.PROCESSING) || status.equals(OrderStatus.REFUNDED))) {
+                return "Cannot change status from " + two.getStatus() + " to " + status;
+            } else if(two.getStatus().equals(OrderStatus.PROCESSING) && !(status.equals(OrderStatus.PAID) || status.equals(OrderStatus.REFUNDED))){
+                return "Cannot change status from " + two.getStatus() + " to " + status;
+            } else if(two.getStatus().equals(OrderStatus.PAID) || two.getStatus().equals(OrderStatus.REFUNDED)){
+                return "Cannot change status from " + two.getStatus() + " to " + status;
+            } else {
+                two.setStatus(status);
+                ticketOrderRepository.save(two);
+                return "Ticket order status updated successfully";
+            }
+        }
     }
 }

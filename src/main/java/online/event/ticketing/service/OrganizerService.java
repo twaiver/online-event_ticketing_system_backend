@@ -9,17 +9,18 @@ import org.springframework.stereotype.Service;
 
 import online.event.ticketing.domain.EventCategory;
 import online.event.ticketing.domain.Organizer;
+import online.event.ticketing.domain.Venue;
 import online.event.ticketing.repository.OrganizerRepository;
 
-@Service 
+@Service
 public class OrganizerService {
-    
-    @Autowired 
+
+    @Autowired
     private OrganizerRepository organizerRepository;
 
     public String saveOrganizer(Organizer organizer) {
         boolean isAvaialble = organizerRepository.existsByEmail(organizer.getEmail());
-        if(isAvaialble) {
+        if (isAvaialble) {
             return "the organizer with that email " + organizer.getEmail() + " is already available";
         } else {
             organizerRepository.save(organizer);
@@ -43,17 +44,16 @@ public class OrganizerService {
         }
     }
 
-
     public String updateOrganizer(UUID id, Organizer organizer) {
         Optional<Organizer> orga = organizerRepository.findById(id);
 
-        if(orga.isEmpty()) {
+        if (orga.isEmpty()) {
             return "the Organizer with that id is not exist";
         } else {
             Organizer newOrgani = orga.get();
             List<EventCategory> listToSend = newOrgani.getEventCategories();
 
-            for(EventCategory d : organizer.getEventCategories()) {
+            for (EventCategory d : organizer.getEventCategories()) {
                 listToSend.add(d);
             }
 
@@ -73,5 +73,56 @@ public class OrganizerService {
         List<Organizer> result = organizerRepository.allOrganizerByCategory(name);
 
         return result;
+    }
+
+    public String addEvent(UUID organizer, UUID category) {
+        Optional<Organizer> check = organizerRepository.findById(organizer);
+
+        if (check.isEmpty()) {
+            return "The organizer with that id does not exist";
+        } else {
+            List<EventCategory> eve = organizerRepository.checkEventCategory(category);
+            if (eve.isEmpty()) {
+                return "That event category does not exist";
+            } else {
+                EventCategory cat = new EventCategory();
+                cat.setId(category);
+                boolean isAlready = organizerRepository.existsByEventCategoriesAndId(cat, organizer);
+                if (isAlready) {
+                    return "The organizer already has that event category";
+                } else {
+                    List<EventCategory> sendThis = check.get().getEventCategories();
+                    sendThis.add(cat);
+                    check.get().setEventCategories(sendThis);
+                    
+                    organizerRepository.save(check.get());
+                    return "Event category added to the organizer";
+                }
+            }
+        }
+    }
+
+    public String changeVenue(UUID organizer, int venueNumber) {
+        Optional<Organizer> org = organizerRepository.findById(organizer);
+
+        if(org.isEmpty()) {
+            return "The organizer with that id does not exist";
+        } else {
+            Venue venue = organizerRepository.venue(venueNumber);
+
+            if(venue == null) {
+                return "The venue with that venueNumber does not exist";
+            } else {
+                boolean checkIsTaken = organizerRepository.existsByVenue(venue);
+
+                if(checkIsTaken) {
+                    return "That venue with is taken by another organizer";
+                } else {
+                    org.get().setVenue(venue);
+                    organizerRepository.save(org.get());
+                    return "Venue changed successfully";
+                }
+            }
+        }
     }
 }
