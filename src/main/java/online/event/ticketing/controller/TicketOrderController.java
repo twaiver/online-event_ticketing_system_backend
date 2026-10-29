@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -94,5 +95,19 @@ public class TicketOrderController {
             return new ResponseEntity<>(res, HttpStatus.valueOf(400));
         }
         
+    }
+
+    @GetMapping (value = "/stats/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> groupBy() {
+        List<Object[]> theData = ticketOrderService.groupBy();
+
+        return new ResponseEntity<>(theData, HttpStatus.OK);
+    }
+
+    @PatchMapping (value = "/cancel-day")
+    public ResponseEntity<?> refundedTicket(@RequestParam ("organizerId") UUID id, @RequestParam ("date") LocalDate date) {
+        String result = ticketOrderService.refundTicket(date, id);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

@@ -116,4 +116,16 @@ public class TicketOrderService {
             }
         }
     }
+
+    public List<Object[]> groupBy() {
+        List<Object[]> theData = ticketOrderRepository.groundBy();
+
+        return theData;
+    }
+
+    public String refundTicket(LocalDate date, UUID id) {
+        int result = ticketOrderRepository.updatedRows(id, date);
+
+        return result + " ticket orders cancelled";
+    }
 }
