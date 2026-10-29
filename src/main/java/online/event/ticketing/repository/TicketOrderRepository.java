@@ -31,4 +31,8 @@ public interface TicketOrderRepository extends JpaRepository<TicketOrder, UUID> 
     @Modifying 
     @Query (value = "UPDATE TicketOrder t SET t.status = 'REFUNDED' WHERE NOT t.status = 'PAID' AND t.orderDate = :date AND t.organizer.id = :id")
     int updatedRows(@Param ("id") UUID id,@Param ("date") LocalDate date);
+
+    Long countByStatus(OrderStatus status);
+    Long countByOrderDate(LocalDate date);
+    
 }

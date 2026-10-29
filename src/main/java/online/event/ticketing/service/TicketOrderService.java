@@ -6,6 +6,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import online.event.ticketing.domain.OrderStatus;
@@ -127,5 +132,20 @@ public class TicketOrderService {
         int result = ticketOrderRepository.updatedRows(id, date);
 
         return result + " ticket orders cancelled";
+    }
+
+    public Page<TicketOrder> pagingTicket(int page, int size, String sort) {
+
+        String[] theStrings = sort.split(","); 
+
+        String one = theStrings[0];
+        String order = theStrings[1];
+        
+        Direction direction = order.equals("desc") ? Direction.DESC : Direction.ASC;
+        Pageable sendThis = PageRequest.of(page, size, Sort.by(direction, one));
+
+        Page<TicketOrder> result = ticketOrderRepository.findAll(sendThis);
+        
+        return result;
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -109,5 +110,13 @@ public class TicketOrderController {
         String result = ticketOrderService.refundTicket(date, id);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> pagingTicket(@RequestParam ("page") int page, 
+    @RequestParam  ("size") int size, @RequestParam  ("sort") String sort) {
+        Page<TicketOrder> theData = ticketOrderService.pagingTicket(page, size, sort);
+
+        return new ResponseEntity<>(theData, HttpStatus.OK);
     }
 }
