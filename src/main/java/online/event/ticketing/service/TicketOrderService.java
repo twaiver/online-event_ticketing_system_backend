@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import online.event.ticketing.domain.OrderStatus;
 import online.event.ticketing.domain.TicketOrder;
+import online.event.ticketing.repository.IssuedTicketRepository;
 import online.event.ticketing.repository.TicketOrderRepository;
 
 @Service 
@@ -17,6 +18,9 @@ public class TicketOrderService {
     
     @Autowired 
     private TicketOrderRepository ticketOrderRepository;
+
+    @Autowired 
+    private IssuedTicketRepository issuedTicketRepository;
 
     public String saveTicketOrder(TicketOrder ticketOrder) {
         LocalDate nowDate = LocalDate.now();
@@ -45,10 +49,18 @@ public class TicketOrderService {
     public String deleteTicketOrder(UUID id) {
         boolean tick = ticketOrderRepository.existsById(id);
         if (!tick) {
-            return "the TicketOrder with that id is not exist";
+            return "the ticket order with that id is not exist";
         } else {
-            ticketOrderRepository.deleteById(id);
-            return "the ticketOrder with id of " + id + " deleted successfully";
+
+            TicketOrder ord = new TicketOrder();
+            ord.setId(id);
+            boolean checkIsAvail = issuedTicketRepository.existsByOrderTicket(ord);
+            if(checkIsAvail) {
+                return "That ticket order has issued tickets, delete them first";
+            } else {
+                ticketOrderRepository.deleteById(id);
+                return "the ticket order deleted successfully";
+            }
         }
     }
 

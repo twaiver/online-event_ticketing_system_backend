@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import online.event.ticketing.domain.Buyer;
-import online.event.ticketing.domain.Organizer;
 import online.event.ticketing.repository.BuyerRepository;
 
 @Service 
@@ -68,12 +67,9 @@ public class BuyerService {
         return result;
     }
 
-    public List<Buyer> allBuyersByOrganizer(UUID id) {
+    public List<Buyer> allBuyersByOrganizer(UUID id) {   
 
-        Organizer newOrg = new Organizer();
-        newOrg.setId(id);
-
-        List<Buyer> data = buyerRepository.allBuyerByOrganizer(newOrg);
+        List<Buyer> data = buyerRepository.allBuyerByOrganizer(id);
 
         return data;
     }

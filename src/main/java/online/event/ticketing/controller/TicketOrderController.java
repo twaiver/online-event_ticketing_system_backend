@@ -52,7 +52,13 @@ public class TicketOrderController {
     @DeleteMapping (value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteTicketOrder(@PathVariable UUID id) {
         String res = ticketOrderService.deleteTicketOrder(id);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        if(res.equals("the ticket order with that id is not exist")) {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(404));
+        } else if(res.equals("That ticket order has issued tickets, delete them first")) {
+            return new ResponseEntity<>(res, HttpStatus.valueOf(409));
+        } else {
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
     }
 
     @PutMapping (value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

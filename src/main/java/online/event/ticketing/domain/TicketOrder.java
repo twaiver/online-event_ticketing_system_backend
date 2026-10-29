@@ -40,6 +40,10 @@ public class TicketOrder {
         return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public void setOrderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
     }
